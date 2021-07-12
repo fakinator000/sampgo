@@ -5,6 +5,24 @@ import (
 	"time"
 )
 
+type ObjectLike interface {
+	GetID() int
+	Destroy()
+	IsValid() bool
+	Move(x, y, z, speed, rotX, rotY, rotZ float32) time.Duration
+	IsMoving() bool
+	Stop()
+	SetPos(x, y, z float32)
+	SetRot(rx, ry, rz float32)
+	GetPos() (x, y, z float32, err error)
+	GetRot() (rx, ry, rz float32, err error)
+}
+
+type PlayerObjectLike interface {
+	ObjectLike
+	HasPlayerLike
+}
+
 type Object struct {
 	ID int
 }
@@ -63,56 +81,61 @@ func (o *Object) GetRot() (rx, ry, rz float32, err error) {
 
 type PlayerObject struct {
 	ID     int
-	player Player
+	player PlayerLike
 }
 
 func (o *PlayerObject) GetID() int {
 	return o.ID
 }
 
-func NewPlayerObject(modelid int, x, y, z, rX, rY, rZ, drawDistance float32) (o *PlayerObject) {
+func (o *PlayerObject) GetPlayer() PlayerLike {
+	return o.player
+}
+
+func NewPlayerObject(p PlayerLike, modelid int, x, y, z, rX, rY, rZ, drawDistance float32) (o *PlayerObject) {
 	o = new(PlayerObject)
-	o.ID = CreatePlayerObject(o.player.ID, modelid, x, y, z, rX, rY, rZ, drawDistance)
+	o.player = p
+	o.ID = CreatePlayerObject(o.player.GetID(), modelid, x, y, z, rX, rY, rZ, drawDistance)
 	return
 }
 
 func (o *PlayerObject) Destroy() {
-	DestroyPlayerObject(o.player.ID, o.ID)
+	DestroyPlayerObject(o.player.GetID(), o.ID)
 }
 
 func (o *PlayerObject) IsValid() bool {
-	return IsValidPlayerObject(o.player.ID, o.ID)
+	return IsValidPlayerObject(o.player.GetID(), o.ID)
 }
 
 // Returns the time it will take for the object to move
 func (o *PlayerObject) Move(x, y, z, speed, rotX, rotY, rotZ float32) time.Duration {
-	return time.Duration(MovePlayerObject(o.player.ID, o.ID, x, y, z, speed, rotX, rotY, rotZ)) * time.Millisecond
+	return time.Duration(MovePlayerObject(o.player.GetID(), o.ID, x, y, z, speed, rotX, rotY, rotZ)) * time.Millisecond
 }
 
 func (o *PlayerObject) IsMoving() bool {
-	return IsPlayerObjectMoving(o.player.ID, o.ID)
+	return IsPlayerObjectMoving(o.player.GetID(), o.ID)
 }
 
 func (o *PlayerObject) Stop() {
-	StopPlayerObject(o.player.ID, o.ID)
+	StopPlayerObject(o.player.GetID(), o.ID)
 }
 
 func (o *PlayerObject) SetPos(x, y, z float32) {
-	SetPlayerObjectPos(o.player.ID, o.ID, x, y, z)
+	SetPlayerObjectPos(o.player.GetID(), o.ID, x, y, z)
 }
 func (o *PlayerObject) SetRot(rx, ry, rz float32) {
-	SetPlayerObjectRot(o.player.ID, o.ID, rx, ry, rz)
+	SetPlayerObjectRot(o.player.GetID(), o.ID, rx, ry, rz)
 }
 
 func (o *PlayerObject) GetPos() (x, y, z float32, err error) {
-	if !GetPlayerObjectPos(o.player.ID, o.ID, &x, &y, &z) {
+	if !GetPlayerObjectPos(o.player.GetID(), o.ID, &x, &y, &z) {
 		err = fmt.Errorf("invalid object")
 	}
 	return
 }
 
 func (o *PlayerObject) GetRot() (rx, ry, rz float32, err error) {
-	if !GetPlayerObjectRot(o.player.ID, o.ID, &rx, &ry, &rz) {
+	if !GetPlayerObjectRot(o.player.GetID(), o.ID, &rx, &ry, &rz) {
 		err = fmt.Errorf("invalid object")
 	}
 	return

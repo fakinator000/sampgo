@@ -12,6 +12,21 @@ const (
 	SeatBackRight
 )
 
+type VehicleLike interface {
+	GetID() int
+	Destroy() error
+	SetToRespawn() error
+	GetSpeedFloat64() float64
+	GetSpeedFloat32() float32
+	GetSpeedInt() int
+	PutPlayer(p PlayerLike, seat int) error
+	GetParams() VehicleParams
+	SetParams(params VehicleParams)
+	GetPos() (x, y, z float32, err error)
+	GetZAngle() (zAngle float32, err error)
+	GetRotationQuad() (quatW, quatX, quatY, quatZ float32, err error)
+}
+
 type Vehicle struct {
 	ID int
 }
@@ -24,6 +39,10 @@ type VehicleParams struct {
 	Bonnet    int
 	Boot      int
 	Objective int
+}
+
+func (v *Vehicle) GetID() int {
+	return v.ID
 }
 
 func NewVehicle(modelid int, x, y, z, rotation float32, color1, color2 uint8, respawn_delay int, addsiren bool) (Vehicle, error) {
@@ -68,8 +87,8 @@ func (v *Vehicle) GetSpeedInt() int {
 	return int(math.Round(v.GetSpeedFloat64()))
 }
 
-func (v *Vehicle) PutPlayer(p *Player, seat int) error {
-	if !PutPlayerInVehicle(p.ID, v.ID, seat) {
+func (v *Vehicle) PutPlayer(p PlayerLike, seat int) error {
+	if !PutPlayerInVehicle(p.GetID(), v.ID, seat) {
 		return fmt.Errorf("player or vehicle doesn't exist")
 	}
 	return nil

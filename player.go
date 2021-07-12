@@ -5,6 +5,37 @@ import (
 	"time"
 )
 
+type PlayerLike interface {
+	GetID() int
+	GetName() string
+	SetName(name string) error
+	SendMessage(colour int, msg string) error
+	GetPos() (float32, float32, float32, error)
+	SetPos(x, y, z float32) error
+	Spawn() error
+	SetSpawnInfo(team, skin int, x, y, z, rotation float32, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo int)
+	ShowDialog(dialogid, style int, caption, info, button1, button2 string) error
+	GetFacingAngle() (float32, error)
+	GiveMoney(money int) error
+	GetMoney() int
+	ResetMoney() error
+	IsAdmin() bool
+	GetPlayerState() int
+	GetVehicle() (v VehicleLike, err error)
+	IsInVehicle(v VehicleLike) bool
+	IsInAnyVehicle() bool
+	ApplyAnimation(animlib, animname string, fDelta float32, loop, lockx, locky, freeze bool, time int, forcesync bool)
+	ClearAnimations(forcesync bool)
+	SetSpecialAction(actionid int) error
+	GetSpecialAction() int
+	SelectTextDraw(hovercolor int)
+	CancelSelectTextDraw()
+}
+
+type HasPlayerLike interface {
+	GetPlayer() PlayerLike
+}
+
 // Player implements OO players.
 type Player struct {
 	ID int
@@ -127,19 +158,20 @@ func (p *Player) GetPlayerState() int {
 	return GetPlayerState(p.ID)
 }
 
-func (p *Player) GetVehicle() (v Vehicle, err error) {
+func (p *Player) GetVehicle() (VehicleLike, error) {
+	var v Vehicle
 	v.ID = GetPlayerVehicleID(p.ID)
-	if v.ID == 0 {
-		err = fmt.Errorf("player is not in a vehicle")
+	if v.ID == 0 || v.ID == InvalidVehicleId {
+		return &v, fmt.Errorf("player is not in a vehicle")
 	}
-	return
+	return &v, nil
 }
 
-func (p *Player) IsInVehicle(v *Vehicle) bool {
-	return IsPlayerInVehicle(p.ID, v.ID)
+func (p *Player) IsInVehicle(v VehicleLike) bool {
+	return IsPlayerInVehicle(p.ID, v.GetID())
 }
 
-func (p *Player) IsInAnyVehicle(v *Vehicle) bool {
+func (p *Player) IsInAnyVehicle() bool {
 	return IsPlayerInAnyVehicle(p.ID)
 }
 
