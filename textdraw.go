@@ -135,7 +135,7 @@ func (td *TextDraw) SetPreviewVehCol(color1, color2 int) error {
 }
 
 type PlayerTextDraw struct {
-	player   *Player
+	player   PlayerLike
 	textDraw int
 	align    int
 }
@@ -149,79 +149,79 @@ func (p *Player) NewPlayerTextDraw(x, y float32, text string) (PlayerTextDraw, e
 }
 
 func (p *PlayerTextDraw) Destroy() {
-	PlayerTextDrawDestroy(p.player.ID, p.textDraw)
+	PlayerTextDrawDestroy(p.player.GetID(), p.textDraw)
 }
 
 func (p *PlayerTextDraw) SetString(text string) {
-	PlayerTextDrawSetString(p.player.ID, p.textDraw, text)
+	PlayerTextDrawSetString(p.player.GetID(), p.textDraw, text)
 }
 
 func (p *PlayerTextDraw) Show() {
-	PlayerTextDrawShow(p.player.ID, p.textDraw)
+	PlayerTextDrawShow(p.player.GetID(), p.textDraw)
 }
 
 func (p *PlayerTextDraw) Hide() {
-	PlayerTextDrawHide(p.player.ID, p.textDraw)
+	PlayerTextDrawHide(p.player.GetID(), p.textDraw)
 }
 
 func (p *PlayerTextDraw) Font(font int) {
-	PlayerTextDrawFont(p.player.ID, p.textDraw, font)
+	PlayerTextDrawFont(p.player.GetID(), p.textDraw, font)
 }
 
 func (p *PlayerTextDraw) UseBox(use bool) {
-	PlayerTextDrawUseBox(p.player.ID, p.textDraw, use)
+	PlayerTextDrawUseBox(p.player.GetID(), p.textDraw, use)
 }
 
 func (p *PlayerTextDraw) SetAlignment(align int) {
 	p.align = align
-	PlayerTextDrawAlignment(p.player.ID, p.textDraw, p.align)
+	PlayerTextDrawAlignment(p.player.GetID(), p.textDraw, p.align)
 }
 
 func (p *PlayerTextDraw) SetTextSize(x, y float32) {
 	if p.align == 2 {
 		x, y = y, x
 	}
-	PlayerTextDrawTextSize(p.player.ID, p.textDraw, x, y)
+	PlayerTextDrawTextSize(p.player.GetID(), p.textDraw, x, y)
 }
 
 func (p *PlayerTextDraw) SetColor(color int) {
-	PlayerTextDrawColor(p.player.ID, p.textDraw, color)
+	PlayerTextDrawColor(p.player.GetID(), p.textDraw, color)
 }
 
 var SetColour = (*PlayerTextDraw).SetColor
 
 func (p *PlayerTextDraw) SetBoxColor(color int) {
-	PlayerTextDrawBoxColor(p.player.ID, p.textDraw, color)
+	PlayerTextDrawBoxColor(p.player.GetID(), p.textDraw, color)
 }
 
 var SetBoxColour = (*PlayerTextDraw).SetBoxColor
 
 func (p *PlayerTextDraw) SetBackgroundColor(color int) {
-	PlayerTextDrawBackgroundColor(p.player.ID, p.textDraw, color)
+	PlayerTextDrawBackgroundColor(p.player.GetID(), p.textDraw, color)
 }
 
 var SetBackgroundColour = (*PlayerTextDraw).SetBackgroundColor
 
 func (p *PlayerTextDraw) SetSelectable(selectable bool) {
-	PlayerTextDrawSetSelectable(p.player.ID, p.textDraw, selectable)
+	PlayerTextDrawSetSelectable(p.player.GetID(), p.textDraw, selectable)
 }
 
 func (p *PlayerTextDraw) SetPreviewModel(modelindex int) error {
-	if !PlayerTextDrawSetPreviewModel(p.player.ID, p.textDraw, modelindex) {
+	if !PlayerTextDrawSetPreviewModel(p.player.GetID(), p.textDraw, modelindex) {
 		return fmt.Errorf("invalid player or textdraw")
 	}
 	return nil
 }
 
 func (p *PlayerTextDraw) SetPreviewRot(rotX, rotY, rotZ, zoom float32) error {
-	if !PlayerTextDrawSetPreviewRot(p.player.ID, p.textDraw, rotX, rotY, rotZ, zoom) {
+	if !PlayerTextDrawSetPreviewRot(p.player.GetID(), p.textDraw, rotX, rotY, rotZ, zoom) {
 		return fmt.Errorf("invalid player or textdraw")
 	}
 	return nil
 }
 
 func (p *PlayerTextDraw) SetPreviewVehCol(color1, color2 int) error {
-	if !PlayerTextDrawSetPreviewVehCol(p.player.ID, p.textDraw, color1, color2) {
+	if !PlayerTextDrawSetPreviewVehCol(p.player.GetID(), p.textDraw, color1, color2) {
 		return fmt.Errorf("invalid player or textdraw")
 	}
 	return nil
