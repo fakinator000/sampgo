@@ -21,7 +21,7 @@ type PlayerLike interface {
 	ResetMoney() error
 	IsAdmin() bool
 	GetPlayerState() int
-	GetVehicle() (v VehicleLike, err error)
+	GetVehicle() (VehicleLike, error)
 	IsInVehicle(v VehicleLike) bool
 	IsInAnyVehicle() bool
 	ApplyAnimation(animlib, animname string, fDelta float32, loop, lockx, locky, freeze bool, time int, forcesync bool)
@@ -30,6 +30,15 @@ type PlayerLike interface {
 	GetSpecialAction() int
 	SelectTextDraw(hovercolor int)
 	CancelSelectTextDraw()
+	Kick()
+	Ban()
+	BanEx(reason string)
+	GetIP() (ip string, err error)
+	GetIPPort() (ipPort string)
+	GetPing() time.Duration
+	GetVersion() (version string)
+	GetConnectedTime() (time.Duration, error)
+	AttachObject(o ObjectLike, offsetX, offsetY, offsetZ, rotX, rotY, rotZ float32)
 }
 
 type HasPlayerLike interface {
@@ -245,6 +254,6 @@ func (p *Player) GetConnectedTime() (time.Duration, error) {
 	return connectedTime * time.Millisecond, nil
 }
 
-func (p *Player) AttachObject(o Object, offsetX, offsetY, offsetZ, rotX, rotY, rotZ float32) {
-	AttachObjectToPlayer(o.ID, p.ID, offsetX, offsetY, offsetZ, rotX, rotY, rotZ)
+func (p *Player) AttachObject(o ObjectLike, offsetX, offsetY, offsetZ, rotX, rotY, rotZ float32) {
+	AttachObjectToPlayer(o.GetID(), p.ID, offsetX, offsetY, offsetZ, rotX, rotY, rotZ)
 }
