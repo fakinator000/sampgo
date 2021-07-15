@@ -43,7 +43,7 @@ type VehicleParams struct {
 	Objective int
 }
 
-func (v *Vehicle) GetID() int {
+func (v Vehicle) GetID() int {
 	return v.ID
 }
 
@@ -59,14 +59,14 @@ func NewVehicle(modelid int, x, y, z, rotation float32, color1, color2 uint8, re
 	return v, nil
 }
 
-func (v *Vehicle) Destroy() error {
+func (v Vehicle) Destroy() error {
 	if !DestroyVehicle(v.ID) {
 		return fmt.Errorf("vehicle doesn't exist")
 	}
 	return nil
 }
 
-func (v *Vehicle) SetToRespawn() error {
+func (v Vehicle) SetToRespawn() error {
 	if !SetVehicleToRespawn(v.ID) {
 		return fmt.Errorf("vehicle doesn't exist")
 	}
@@ -74,67 +74,67 @@ func (v *Vehicle) SetToRespawn() error {
 
 }
 
-func (v *Vehicle) GetSpeedFloat64() float64 {
+func (v Vehicle) GetSpeedFloat64() float64 {
 	var x, y, z float32
 	GetVehicleVelocity(v.ID, &x, &y, &z)
 
 	return math.Sqrt(float64((x*x)+(y*y)+(z*z))) * 136.666667
 }
 
-func (v *Vehicle) GetSpeedFloat32() float32 {
+func (v Vehicle) GetSpeedFloat32() float32 {
 	return float32(v.GetSpeedFloat64())
 }
 
-func (v *Vehicle) GetSpeedInt() int {
+func (v Vehicle) GetSpeedInt() int {
 	return int(math.Round(v.GetSpeedFloat64()))
 }
 
-func (v *Vehicle) PutPlayer(p PlayerLike, seat int) error {
+func (v Vehicle) PutPlayer(p PlayerLike, seat int) error {
 	if !PutPlayerInVehicle(p.GetID(), v.ID, seat) {
 		return fmt.Errorf("player or vehicle doesn't exist")
 	}
 	return nil
 }
 
-func (v *Vehicle) GetParams() VehicleParams {
+func (v Vehicle) GetParams() VehicleParams {
 	var params VehicleParams
 	GetVehicleParamsEx(v.ID, &params.Engine, &params.Lights, &params.Alarm, &params.Doors, &params.Bonnet, &params.Boot, &params.Objective)
 	return params
 }
 
-func (v *Vehicle) SetParams(params VehicleParams) {
+func (v Vehicle) SetParams(params VehicleParams) {
 	SetVehicleParamsEx(v.ID, params.Engine, params.Lights, params.Alarm, params.Doors, params.Bonnet, params.Boot, params.Objective)
 }
 
-func (v *Vehicle) SetPos(x, y, z float32) (err error) {
+func (v Vehicle) SetPos(x, y, z float32) (err error) {
 	if !SetVehiclePos(v.ID, x, y, z) {
 		err = fmt.Errorf("invalid vehicle")
 	}
 	return
 }
 
-func (v *Vehicle) GetPos() (x, y, z float32, err error) {
+func (v Vehicle) GetPos() (x, y, z float32, err error) {
 	if !GetVehiclePos(v.ID, &x, &y, &z) {
 		err = fmt.Errorf("invalid vehicle")
 	}
 	return
 }
 
-func (v *Vehicle) SetZAngle(zAngle float32) (err error) {
+func (v Vehicle) SetZAngle(zAngle float32) (err error) {
 	if !SetVehicleZAngle(v.ID, zAngle) {
 		err = fmt.Errorf("invalid vehicle")
 	}
 	return
 }
 
-func (v *Vehicle) GetZAngle() (zAngle float32, err error) {
+func (v Vehicle) GetZAngle() (zAngle float32, err error) {
 	if !GetVehicleZAngle(v.ID, &zAngle) {
 		err = fmt.Errorf("invalid vehicle")
 	}
 	return
 }
 
-func (v *Vehicle) GetRotationQuad() (quatW, quatX, quatY, quatZ float32, err error) {
+func (v Vehicle) GetRotationQuad() (quatW, quatX, quatY, quatZ float32, err error) {
 	if !GetVehicleRotationQuat(v.ID, &quatW, &quatX, &quatY, &quatZ) {
 		err = fmt.Errorf("invalid vehicle")
 	}

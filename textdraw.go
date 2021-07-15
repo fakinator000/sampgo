@@ -46,8 +46,8 @@ type TextDraw struct {
 	align    int
 }
 
-func NewTextDraw(x, y float32, text string) (TextDraw, error) {
-	td := TextDraw{textDraw: TextDrawCreate(x, y, text)}
+func NewTextDraw(x, y float32, text string) (TextDrawLike, error) {
+	td := &TextDraw{textDraw: TextDrawCreate(x, y, text)}
 	if td.textDraw == InvalidTextDraw {
 		return td, fmt.Errorf("invalid textdraw")
 	}
@@ -140,12 +140,16 @@ type PlayerTextDraw struct {
 	align    int
 }
 
-func (p *Player) NewPlayerTextDraw(x, y float32, text string) (PlayerTextDraw, error) {
-	td := PlayerTextDraw{player: p, textDraw: CreatePlayerTextDraw(p.ID, x, y, text)}
+func (p Player) NewPlayerTextDraw(x, y float32, text string) (PlayerTextDrawLike, error) {
+	td := &PlayerTextDraw{player: p, textDraw: CreatePlayerTextDraw(p.ID, x, y, text)}
 	if td.textDraw == InvalidTextDraw {
 		return td, fmt.Errorf("invalid playertextdraw")
 	}
 	return td, nil
+}
+
+func (p *PlayerTextDraw) GetPlayer() PlayerLike {
+	return p.player
 }
 
 func (p *PlayerTextDraw) Destroy() {
