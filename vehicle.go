@@ -22,7 +22,9 @@ type VehicleLike interface {
 	PutPlayer(p PlayerLike, seat int) error
 	GetParams() VehicleParams
 	SetParams(params VehicleParams)
+	SetPos(x, y, z float32) error
 	GetPos() (x, y, z float32, err error)
+	SetZAngle(zAngle float32) error
 	GetZAngle() (zAngle float32, err error)
 	GetRotationQuad() (quatW, quatX, quatY, quatZ float32, err error)
 }
@@ -104,8 +106,22 @@ func (v *Vehicle) SetParams(params VehicleParams) {
 	SetVehicleParamsEx(v.ID, params.Engine, params.Lights, params.Alarm, params.Doors, params.Bonnet, params.Boot, params.Objective)
 }
 
+func (v *Vehicle) SetPos(x, y, z float32, err error) {
+	if !SetVehiclePos(v.ID, x, y, z) {
+		err = fmt.Errorf("invalid vehicle")
+	}
+	return
+}
+
 func (v *Vehicle) GetPos() (x, y, z float32, err error) {
 	if !GetVehiclePos(v.ID, &x, &y, &z) {
+		err = fmt.Errorf("invalid vehicle")
+	}
+	return
+}
+
+func (v *Vehicle) SetZAngle(zAngle float32) (err error) {
+	if !SetVehicleZAngle(v.ID, zAngle) {
 		err = fmt.Errorf("invalid vehicle")
 	}
 	return
