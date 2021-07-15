@@ -92,7 +92,7 @@ func (o *PlayerObject) GetPlayer() PlayerLike {
 	return o.player
 }
 
-func NewPlayerObject(p PlayerLike, modelid int, x, y, z, rX, rY, rZ, drawDistance float32) (o *PlayerObject) {
+func (p *Player) NewPlayerObject(modelid int, x, y, z, rX, rY, rZ, drawDistance float32) (o *PlayerObject) {
 	o = new(PlayerObject)
 	o.player = p
 	o.ID = CreatePlayerObject(o.player.GetID(), modelid, x, y, z, rX, rY, rZ, drawDistance)

@@ -39,6 +39,9 @@ type PlayerLike interface {
 	GetVersion() (version string)
 	GetConnectedTime() (time.Duration, error)
 	AttachObject(o ObjectLike, offsetX, offsetY, offsetZ, rotX, rotY, rotZ float32)
+
+	NewPlayerTextDraw(x, y float32, text string) (PlayerTextDraw, error)
+	NewPlayerObject(modelid int, x, y, z, rX, rY, rZ, drawDistance float32) (o *PlayerObject)
 }
 
 type HasPlayerLike interface {
