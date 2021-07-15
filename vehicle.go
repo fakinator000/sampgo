@@ -106,7 +106,7 @@ func (v *Vehicle) SetParams(params VehicleParams) {
 	SetVehicleParamsEx(v.ID, params.Engine, params.Lights, params.Alarm, params.Doors, params.Bonnet, params.Boot, params.Objective)
 }
 
-func (v *Vehicle) SetPos(x, y, z float32, err error) {
+func (v *Vehicle) SetPos(x, y, z float32) (err error) {
 	if !SetVehiclePos(v.ID, x, y, z) {
 		err = fmt.Errorf("invalid vehicle")
 	}
